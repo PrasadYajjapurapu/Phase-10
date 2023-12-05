@@ -3,30 +3,35 @@ import Button from "../../components/Button";
 
 const AddScoreModal = ({
   score,
-  setScore,
+  handleScore,
   handleKeyDown,
   handleRemovePlayer,
 }) => {
-  const { player } = useSelector((state) => state.player);
+  const player = useSelector((state) =>
+    state.players.find((player) => player.currentSelection === true)
+  );
+
+  if (!player) return;
 
   return (
     <>
       <h3 style={{ color: "red" }}>Add Score</h3>
       <input
-        type="text"
+        type="number"
         className="add-player-text"
         value={score}
-        onChange={(e) => setScore(e.target.value)}
+        onChange={(e) => handleScore(e.target.value)}
         onKeyDown={handleKeyDown}
       />
       <div className="space-between">
         <Button handleClick={() => {}} noMinWidth noShadow>
-          Add with Promotion
+          Level Up
         </Button>
         <Button
-          handleClick={() => handleRemovePlayer(player)}
+          handleClick={() => handleRemovePlayer(player.id)}
           noMinWidth
           noShadow
+          className="ml-10"
         >
           Add Score
         </Button>

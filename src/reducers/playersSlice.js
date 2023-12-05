@@ -5,17 +5,31 @@ export const playersSlice = createSlice({
   initialState: [],
   reducers: {
     addPlayer: (state, action) => {
-      return [action.payload, ...state];
+      const playerBasicInfo = {
+        currentSelection: false,
+        score: 0,
+        level: 1,
+        ...action.payload,
+      };
+      return [playerBasicInfo, ...state];
     },
     removePlayer: (state, action) => {
       const filteredPlayers = state.filter(
-        (player) => player !== action.payload
+        (player) => player.id !== action.payload
       );
       return [...filteredPlayers];
+    },
+    currentPlayer: (state, action) => {
+      const currentSelectionUpdate = state.forEach((player) => {
+        if (player.id === action.payload) {
+          player.currentSelection = !player.currentSelection;
+        }
+      });
+      return currentSelectionUpdate;
     },
   },
 });
 
-export const { addPlayer, removePlayer } = playersSlice.actions;
+export const { addPlayer, removePlayer, currentPlayer } = playersSlice.actions;
 
 export default playersSlice.reducer;

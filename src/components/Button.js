@@ -12,10 +12,11 @@ const Button = (props) => {
     noMinWidth,
     inverse,
     children,
+    className,
     ...rest
   } = props;
 
-  const buttonStyles = classNames("app-button", {
+  const buttonStyles = classNames(`app-button ${className}`, {
     "app-button-no-boxshadow": noShadow,
     "app-button-inline": inline,
     "app-button-no-bg": noBg,
