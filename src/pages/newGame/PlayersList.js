@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useLocation } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { removePlayer } from "../../reducers/playersSlice";
-import { currentPlayer } from "../../reducers/playerSlice";
+import { removePlayer, currentPlayer } from "../../reducers/playersSlice";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import PlayersListHeader from "./PlayersListHeader";
@@ -30,33 +29,41 @@ const PlayersList = () => {
   //   return `rgb(${red}, ${green}, ${blue})`;
   // };
 
-  const confirmRemove = (player) => {
-    setOpen(true);
+  const confirmRemove = (id) => {
+    openModal();
     setModalContentType(REMOVE_PLAYER);
-    dispatch(currentPlayer(player));
+    dispatch(currentPlayer(id));
   };
 
-  const addScore = (player) => {
-    setOpen(true);
+  const addScore = (id) => {
+    openModal();
     setModalContentType(ADD_SCORE);
-    // dispatch(currentPlayer(player));
+    dispatch(currentPlayer(id));
   };
 
-  const handleRemovePlayer = (player) => {
-    dispatch(removePlayer(player));
-    dispatch(currentPlayer(""));
+  const handleRemovePlayer = (id) => {
+    closeModal();
+    dispatch(removePlayer(id));
   };
+
+  const openModal = () => setOpen(true);
+
+  const closeModal = () => setOpen(false);
 
   const editOptions = (player) => {
     return (
       <>
         {isNewGame ? (
-          <Button handleClick={() => confirmRemove(player)} transparant inline>
+          <Button
+            handleClick={() => confirmRemove(player.id)}
+            transparant
+            inline
+          >
             <AiFillDelete size={25} color="red" />
           </Button>
         ) : (
           <>
-            <Button handleClick={() => addScore(player)} transparant inline>
+            <Button handleClick={() => addScore(player.id)} transparant inline>
               <AiFillEdit size={25} color="#140043" />
             </Button>
             <span>0</span>
@@ -80,11 +87,19 @@ const PlayersList = () => {
     setScore(score);
   };
 
-  const handleScore = (event) => setScore(event.target.value);
+  const handleScore = (value) => setScore(value);
+
+  const handleCancelRemove = (id) => {
+    dispatch(currentPlayer(id));
+    closeModal();
+  };
 
   const modalContentMapper = {
     REMOVE_PLAYER: (
-      <RemovePlayerModal handleRemovePlayer={handleRemovePlayer} />
+      <RemovePlayerModal
+        handleRemovePlayer={handleRemovePlayer}
+        closeModal={handleCancelRemove}
+      />
     ),
     ADD_SCORE: (
       <AddScoreModal
@@ -103,13 +118,13 @@ const PlayersList = () => {
         {players?.map((player, index) => {
           return (
             <li key={`${player}-${index}`}>
-              <span>{player}</span>
+              <span>{player.name}</span>
               {editOptions(player)}
             </li>
           );
         })}
       </ul>
-      <Modal isOpen={open} onClose={() => setOpen(false)}>
+      <Modal isOpen={open} onClose={closeModal}>
         {modalContentMapper[modalContentType]}
       </Modal>
     </>

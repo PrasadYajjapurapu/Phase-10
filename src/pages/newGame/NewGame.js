@@ -13,7 +13,8 @@ const NewGame = () => {
 
   const handleAddPlayer = () => {
     if (player === "") return;
-    dispatch(addPlayer(player));
+    const payload = { name: player, id: players.length + 1 };
+    dispatch(addPlayer(payload));
     setPlayer("");
   };
 

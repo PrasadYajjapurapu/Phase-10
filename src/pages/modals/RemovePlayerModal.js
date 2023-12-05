@@ -1,20 +1,25 @@
 import { useSelector } from "react-redux";
 import Button from "../../components/Button";
 
-const RemovePlayerModal = ({ handleRemovePlayer }) => {
-  const { player } = useSelector((state) => state.player);
+const RemovePlayerModal = ({ handleRemovePlayer, closeModal }) => {
+  const player = useSelector((state) => {
+    return state.players.find((player) => player.currentSelection === true);
+  });
+
+  if (!player) return;
 
   return (
     <>
-      <h3 style={{ color: "red" }}>Remove {player}?</h3>
+      <h3 style={{ color: "red" }}>Remove {player.name}?</h3>
       <div className="space-between">
-        <Button handleClick={() => {}} noMinWidth noShadow>
+        <Button handleClick={() => closeModal(player.id)} noMinWidth noShadow>
           Cancel
         </Button>
         <Button
-          handleClick={() => handleRemovePlayer(player)}
+          handleClick={() => handleRemovePlayer(player.id)}
           noMinWidth
           noShadow
+          className="ml-10"
         >
           Remove
         </Button>
